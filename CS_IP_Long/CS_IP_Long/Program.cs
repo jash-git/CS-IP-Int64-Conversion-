@@ -28,13 +28,21 @@ namespace CS_IP_Long
     */
     class Program
     {
-        public static Int64 ip2long(String ip)
+        public static Int64 ip2long(String ip, bool Reversal = false)
         {
             String[] ips = ip.Split('.');
-            Int64 num = 16777216L * Convert.ToInt64(ips[0], 10) + 65536L * Convert.ToInt64(ips[1], 10) + 256 * Convert.ToInt64(ips[2], 10) + Convert.ToInt64(ips[3], 10);
+            Int64 num=0;
+            if (!Reversal)
+            {
+                num = 16777216L * Convert.ToInt64(ips[0], 10) + 65536L * Convert.ToInt64(ips[1], 10) + 256 * Convert.ToInt64(ips[2], 10) + Convert.ToInt64(ips[3], 10);
+            }
+            else
+            {
+                num = 16777216L * Convert.ToInt64(ips[3], 10) + 65536L * Convert.ToInt64(ips[2], 10) + 256 * Convert.ToInt64(ips[1], 10) + Convert.ToInt64(ips[0], 10);
+            }
             return num;
         }
-        public static String long2ip(Int64 ipLong)
+        public static String long2ip(Int64 ipLong, bool Reversal=false)
         {  
             //long ipLong = 1037591503;  
             Int64[] mask = new Int64[] { 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000 };
@@ -42,10 +50,26 @@ namespace CS_IP_Long
             string Buf = "";
             for(int i=0;i<4;i++){  
                 num = (ipLong & mask[i])>>(i*8);
-                Buf = "."+num + Buf;
+                if (!Reversal)
+                {
+                    Buf = "." + num + Buf;
+                }
+                else
+                {
+                    Buf += num+".";
+                }
             }
 
-            return Buf.Substring(1);  
+            if (!Reversal)
+            {
+                Buf = Buf.Substring(1);
+            }
+            else
+            {
+                Buf = Buf.Substring(0,Buf.Length-1);  
+            }
+
+            return Buf;
         }  
         public static void pause()
         {
@@ -61,8 +85,8 @@ namespace CS_IP_Long
             Int64 val03 = ip2long("192.168.0.5");
             String Str03 = long2ip(val03);
             //--
-            String Str04 = long2ip(3439438016);//驗證API數字
-            Int64 val04 = ip2long(Str04);
+            String Str04 = long2ip(3439438016, true);//驗證API數字[SYRIS公司用]
+            Int64 val04 = ip2long(Str04, true);//驗證API數字[SYRIS公司用]
             pause();
         }
     }
